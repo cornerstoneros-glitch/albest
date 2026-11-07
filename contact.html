@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Devis | Albest Communication</title>
+    <meta name="description" content="Contactez Albest Communication pour vos projets de personnalisation textile et goodies en Côte d'Ivoire. Demandez un devis express.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/png" href="/Favicon.png">
+    <style>
+        .contact-hero {
+            padding-top: 120px;
+            padding-bottom: 5rem;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .contact-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .contact-text h1 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .contact-text p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .contact-info-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .contact-info-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .contact-detail h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.2rem;
+        }
+
+        .contact-detail p, .contact-detail a {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-detail a:hover {
+            color: var(--primary);
+        }
+        
+        .contact-form-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border);
+        }
+
+        .contact-form-card h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        .contact-form-card p.form-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: var(--bg-light);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .form-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .form-message.success {
+            display: block;
+            background: #e6f6ee;
+            color: #0f5132;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .form-message.error {
+            display: block;
+            background: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+
+        .contact-image-wrapper {
+            margin-top: 4rem;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .contact-image-wrapper img {
+            width: 100%;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .contact-inner {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .contact-form-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" id="navbar">
+    <a href="/" class="nav-logo">
+        <img src="/logo.jpg" alt="Albest Communication">
+    </a>
+
+    <ul class="nav-links">
+        <li class="nav-item">
+            <a href="/#catalogue" class="nav-link">Textiles</a>
+        </li>
+        <li class="nav-item">
+            <a href="/#catalogue" class="nav-link">Goodies</a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                Services
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </a>
+            <div class="megamenu" style="min-width: 420px;">
+                <div class="megamenu-body">
+                    <div class="megamenu-col">
+                        <h5>Notre Expertise</h5>
+                        <ul>
+                            <li><a href="/services/broderie">Broderie haute définition <span class="arrow">→</span></a></li>
+                            <li><a href="/services/flocage">Flocage &amp; sérigraphie <span class="arrow">→</span></a></li>
+                            <li><a href="/services/impression">Impression numérique DTG <span class="arrow">→</span></a></li>
+                            <li><a href="/services/sourcing">Sourcing sur-mesure <span class="arrow">→</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a href="/#qui-sommes-nous" class="nav-link">Qui sommes-nous</a>
+        </li>
+        <li class="nav-item">
+            <a href="/contact" class="nav-link" style="color: var(--primary);">Contact</a>
+        </li>
+    </ul>
+
+    <div class="nav-right">
+        <a href="/devis" class="btn-primary" style="font-size: 0.88rem; padding: 0.65rem 1.4rem;">Devis express</a>
+    </div>
+</nav>
+
+<!-- ===================== CONTACT SECTION ===================== -->
+<div class="contact-hero">
+    <div class="contact-inner">
+        
+        <div class="contact-info">
+            <span class="eyebrow" style="color: var(--primary); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 1rem;">Contact & Devis</span>
+            <h1>Discutons de votre projet</h1>
+            <p>Notre équipe est à votre disposition pour vous accompagner dans la création de vos supports de communication personnalisés. Obtenez un devis rapide sous 24h.</p>
+            
+            <ul class="contact-info-list">
+                <li>
+                    <div class="contact-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="contact-detail">
+                        <h4>Email</h4>
+                        <a href="mailto:contact@albest.fr">contact@albest.fr</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="contact-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                    </div>
+                    <div class="contact-detail">
+                        <h4>Téléphone</h4>
+                        <a href="tel:+22500000000">+225 00 00 00 00 00</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="contact-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div class="contact-detail">
+                        <h4>Atelier</h4>
+                        <p>Abidjan, Côte d'Ivoire</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="contact-form-card">
+            <h3>Demande de devis</h3>
+            <p class="form-desc">Remplissez ce formulaire, nous vous répondrons dans les plus brefs délais.</p>
+            
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Nom complet ou Société</label>
+                    <input type="text" id="name" name="name" class="form-control" required placeholder="Ex: Jean Dupont">
+                </div>
+                <div class="form-group">
+                    <label for="email">Adresse email</label>
+                    <input type="email" id="email" name="email" class="form-control" required placeholder="Ex: jean@entreprise.com">
+                </div>
+                <div class="form-group">
+                    <label for="message">Détails de votre projet (Quantité, type de produit, etc.)</label>
+                    <textarea id="message" name="message" class="form-control" required placeholder="Décrivez votre besoin..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary btn-submit">
+                    Envoyer ma demande
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 18px; height: 18px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+                <div id="formStatus" class="form-message"></div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="section-inner" style="padding: 0 2rem;">
+        <div class="contact-image-wrapper">
+            <img src="/images/contact/hero.png" alt="Bureau Albest">
+        </div>
+    </div>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer" id="contact">
+    <div class="section-inner" style="max-width:1400px; margin:0 auto; padding:0 2rem;">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/logo.jpg" alt="Albest Communication">
+                <p>Albest Communication — votre partenaire textile et goodies depuis 10 ans. Livraison rapide en Côte d'Ivoire.</p>
+            </div>
+            <div class="footer-col">
+                <h5>Nos produits</h5>
+                <ul>
+                    <li><a href="/categorie/t-shirts">T-shirts</a></li>
+                    <li><a href="/categorie/polos">Polos</a></li>
+                    <li><a href="/categorie/sweats-et-pulls">Sweats</a></li>
+                    <li><a href="/categorie/sacs-et-bagagerie">Bagagerie</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Informations</h5>
+                <ul>
+                    <li><a href="/contact">Devis Express</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/mentions">Mentions légales</a></li>
+                    <li><a href="/cgv">CGV</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Contact</h5>
+                <ul>
+                    <li><a href="mailto:contact@albest.fr">contact@albest.fr</a></li>
+                    <li><a href="tel:+22500000000">+225 00 00 00 00 00</a></li>
+                    <li><a href="#">Abidjan, Côte d'Ivoire</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 Albest Communication. Tous droits réservés.</span>
+            <div class="footer-bottom-links">
+                <a href="/mentions">Mentions légales</a>
+                <a href="/cgv">CGV</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {
+        navbar.classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    // Gestion du formulaire de contact
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = contactForm.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Envoi en cours...';
+            btn.disabled = true;
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+
+                if (response.ok) {
+                    formStatus.className = 'form-message success';
+                    formStatus.textContent = 'Votre message a bien été envoyé ! Nous vous recontacterons très vite.';
+                    contactForm.reset();
+                } else {
+                    formStatus.className = 'form-message error';
+                    formStatus.textContent = result.error || 'Une erreur est survenue.';
+                }
+            } catch (error) {
+                formStatus.className = 'form-message error';
+                formStatus.textContent = 'Erreur de connexion au serveur.';
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin 360° | Albest Communication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:#1a8f78;--primary-dark:#0d4f43;--primary-light:#e8f5f2;
+            --bg:#f0f4f8;--white:#fff;--text:#111827;--text-light:#6b7280;--border:#e5e7eb;
+            --radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+            --yellow:#f59e0b;--green:#10b981;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+        /* Sidebar */
+        .sidebar{position:fixed;left:0;top:0;width:240px;height:100vh;background:#0f172a;color:white;display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+        .sb-logo{padding:1.5rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+        .sb-logo img{height:36px;background:white;padding:4px 10px;border-radius:8px;}
+        .sb-logo .badge-admin{display:inline-block;background:#ef4444;color:white;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:999px;margin-top:0.4rem;letter-spacing:0.08em;}
+        .sb-section{padding:1rem 0.8rem 0.4rem;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);}
+        .nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1rem;cursor:pointer;transition:all 0.2s;border-left:3px solid transparent;font-size:0.88rem;color:rgba(255,255,255,0.65);margin:1px 0;border-radius:0 8px 8px 0;}
+        .nav-item:hover,.nav-item.active{background:rgba(255,255,255,0.07);border-left-color:var(--primary);color:white;}
+        .nav-item .icon{font-size:1rem;width:18px;text-align:center;}
+        .badge-count{background:var(--red);color:white;font-size:0.65rem;font-weight:700;padding:2px 6px;border-radius:999px;margin-left:auto;}
+        .sb-footer{padding:1rem;border-top:1px solid rgba(255,255,255,0.08);margin-top:auto;}
+        .user-row{display:flex;align-items:center;gap:0.7rem;}
+        .avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:white;}
+        .user-name{font-size:0.82rem;font-weight:600;color:white;}
+        .btn-logout{width:100%;margin-top:0.7rem;padding:0.55rem;background:rgba(255,255,255,0.07);border:none;color:rgba(255,255,255,0.6);border-radius:8px;cursor:pointer;font-size:0.82rem;transition:all 0.2s;}
+        .btn-logout:hover{background:rgba(255,255,255,0.15);color:white;}
+
+        /* Main */
+        .main{margin-left:240px;padding:2rem;}
+        .panel{display:none;}
+        .panel.active{display:block;}
+        .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+        .page-title{font-size:1.7rem;font-weight:800;}
+        .page-subtitle{font-size:0.88rem;color:var(--text-light);margin-top:0.2rem;}
+
+        /* KPI */
+        .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+        .kpi-card{background:var(--white);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden;}
+        .kpi-card::before{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;opacity:0.08;}
+        .kpi-card.blue::before{background:var(--blue);}
+        .kpi-card.green::before{background:var(--green);}
+        .kpi-card.yellow::before{background:var(--yellow);}
+        .kpi-card.red::before{background:var(--red);}
+        .kpi-card.purple::before{background:var(--purple);}
+        .kpi-icon{font-size:1.4rem;margin-bottom:0.6rem;}
+        .kpi-label{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);}
+        .kpi-value{font-size:1.8rem;font-weight:800;color:var(--text);margin-top:0.2rem;}
+
+        /* Card */
+        .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:1.5rem;}
+        .card-header{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+        .card-header h3{font-size:0.95rem;font-weight:700;}
+        .card-body{padding:1.4rem;}
+
+        /* Table */
+        table{width:100%;border-collapse:collapse;}
+        th{text-align:left;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-light);padding:0.65rem 1rem;background:var(--bg);}
+        td{padding:0.85rem 1rem;font-size:0.87rem;border-bottom:1px solid var(--border);}
+        tr:last-child td{border-bottom:none;}
+        tr:hover td{background:#fafafa;}
+
+        /* Badge */
+        .badge{display:inline-block;padding:0.2rem 0.65rem;border-radius:999px;font-size:0.72rem;font-weight:600;}
+        .badge-green{background:#dcfce7;color:#166534;}.badge-yellow{background:#fef9c3;color:#854d0e;}
+        .badge-blue{background:#dbeafe;color:#1e40af;}.badge-red{background:#fee2e2;color:#991b1b;}
+        .badge-gray{background:#f3f4f6;color:#374151;}.badge-purple{background:#f3e8ff;color:#6b21a8;}
+
+        /* CRM Kanban */
+        .kanban{display:flex;gap:1rem;overflow-x:auto;padding-bottom:1rem;}
+        .kanban-col{flex:0 0 240px;background:var(--bg);border-radius:var(--radius);padding:1rem;}
+        .kanban-col-header{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:0.8rem;display:flex;justify-content:space-between;}
+        .kanban-count{background:var(--primary);color:white;border-radius:999px;padding:2px 8px;font-size:0.7rem;}
+        .kanban-card{background:var(--white);border-radius:10px;padding:0.9rem;margin-bottom:0.6rem;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:all 0.2s;}
+        .kanban-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-2px);}
+        .kanban-card h4{font-size:0.88rem;font-weight:700;margin-bottom:0.3rem;}
+        .kanban-card .company{font-size:0.78rem;color:var(--text-light);}
+        .kanban-card .amount{font-size:0.82rem;font-weight:600;color:var(--primary);margin-top:0.4rem;}
+
+        /* Forms */
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+        .form-group{margin-bottom:1rem;}
+        .form-group label{display:block;font-size:0.82rem;font-weight:600;margin-bottom:0.35rem;}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);}
+        .form-group textarea{resize:vertical;min-height:80px;}
+        .btn{padding:0.65rem 1.3rem;border:none;border-radius:8px;font-weight:600;font-size:0.88rem;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+        .btn-primary{background:var(--primary);color:white;}.btn-primary:hover{background:var(--primary-dark);}
+        .btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+        .btn-danger{background:#fee2e2;color:var(--red);border:none;}.btn-danger:hover{background:var(--red);color:white;}
+        .btn-sm{padding:0.4rem 0.8rem;font-size:0.8rem;}
+
+        /* Pipeline stat */
+        .pipeline-summary{display:grid;grid-template-columns:repeat(6,1fr);gap:0.8rem;margin-bottom:1.5rem;}
+        .pipe-stat{background:var(--white);border-radius:10px;padding:1rem;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border);}
+        .pipe-stat .num{font-size:1.4rem;font-weight:800;color:var(--primary);}
+        .pipe-stat .lbl{font-size:0.7rem;color:var(--text-light);margin-top:0.2rem;}
+
+        /* Contact detail */
+        .contact-detail{display:grid;grid-template-columns:1fr 2fr;gap:1.5rem;}
+        .detail-sidebar{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:1.5rem;}
+        .detail-avatar{width:60px;height:60px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:1rem;}
+        .detail-main{display:flex;flex-direction:column;gap:1rem;}
+        .timeline-item{display:flex;gap:1rem;padding:0.8rem;background:var(--bg);border-radius:8px;}
+        .timeline-icon{width:32px;height:32px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+        .timeline-content h5{font-size:0.85rem;font-weight:600;}
+        .timeline-content p{font-size:0.78rem;color:var(--text-light);}
+
+        /* Tabs */
+        .tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;}
+        .tab-btn{padding:0.6rem 1.2rem;border:none;background:transparent;cursor:pointer;font-weight:600;font-size:0.87rem;color:var(--text-light);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
+        .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
+
+        /* Empty */
+        .empty{text-align:center;padding:2.5rem;color:var(--text-light);}
+        .empty .icon{font-size:2.5rem;margin-bottom:0.8rem;}
+        .loading{text-align:center;padding:2rem;color:var(--text-light);}
+
+        /* Modal */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;display:none;align-items:center;justify-content:center;}
+        .modal-overlay.show{display:flex;}
+        .modal{background:var(--white);border-radius:16px;padding:2rem;width:90%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+        .modal h3{font-size:1.2rem;font-weight:700;margin-bottom:1.5rem;}
+        .modal-footer{display:flex;gap:0.8rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);}
+
+        /* Select with color dot */
+        select.stage-select option[value="PROSPECT"]{color:var(--blue);}
+        select.stage-select option[value="GAGNE"]{color:var(--green);}
+        select.stage-select option[value="PERDU"]{color:var(--red);}
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sb-logo">
+        <img src="/logo.jpg" alt="Albest">
+        <div class="badge-admin">ADMIN 360°</div>
+    </div>
+    
+    <div class="sb-section">Tableau de bord</div>
+    <div class="nav-item active" onclick="showPanel('dashboard')"><span class="icon">📊</span> Vue 360°</div>
+    
+    <div class="sb-section">Commerce</div>
+    <div class="nav-item" onclick="showPanel('devis')"><span class="icon">📋</span> Devis <span class="badge-count" id="nb-devis">0</span></div>
+    <div class="nav-item" onclick="showPanel('orders')"><span class="icon">📦</span> Production</div>
+    <div class="nav-item" onclick="showPanel('products')"><span class="icon">🧾</span> Catalogue</div>
+    
+    <div class="sb-section">CRM 360°</div>
+    <div class="nav-item" onclick="showPanel('crm-contacts')"><span class="icon">👥</span> Contacts</div>
+    <div class="nav-item" onclick="showPanel('crm-pipeline')"><span class="icon">💰</span> Pipeline</div>
+    <div class="nav-item" onclick="showPanel('crm-tasks')"><span class="icon">✅</span> Tâches <span class="badge-count" id="nb-tasks">0</span></div>
+    
+    <div class="sb-section">Communication</div>
+    <div class="nav-item" onclick="showPanel('messages')"><span class="icon">💬</span> Messages <span class="badge-count" id="nb-msgs">0</span></div>
+    <div class="nav-item" onclick="showPanel('users')"><span class="icon">👤</span> Clients</div>
+    
+    <div class="sb-footer">
+        <div class="user-row">
+            <div class="avatar" id="adminAvatar">A</div>
+            <div class="user-name" id="adminName">Admin</div>
+        </div>
+        <button class="btn-logout" onclick="logout()">Se déconnecter</button>
+    </div>
+</aside>
+
+<main class="main">
+
+    <!-- ========= DASHBOARD ========= -->
+    <div id="panel-dashboard" class="panel active">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Vue 360°</div>
+                <div class="page-subtitle">Tableau de bord Albest Communication — activité globale</div>
+            </div>
+            <span id="dash-date" style="color:var(--text-light);font-size:0.9rem;"></span>
+        </div>
+        <div class="kpi-grid" id="kpi-grid"><div class="loading" style="grid-column:1/-1">Chargement...</div></div>
+        <div class="card">
+            <div class="card-header"><h3>🕐 Derniers devis</h3><button class="btn btn-outline btn-sm" onclick="showPanel('devis')">Voir tout</button></div>
+            <div id="recent-quotes-table"></div>
+        </div>
+    </div>
+
+    <!-- ========= DEVIS ========= -->
+    <div id="panel-devis" class="panel">
+        <div class="page-header">
+            <div><div class="page-title">Gestion des Devis</div><div class="page-subtitle">Suivez et traitez toutes les demandes de devis</div></div>
+        </div>
+        <div class="card"><div id="devis-table" class="loading">Chargement...</div></div>
+    </div>
+
+    <!-- ========= PRODUCTION ========= -->
+    <div id="panel-orders" class="panel">
+        <div class="page-header">
+            <div><div class="page-title">Suivi Production</div><div class="page-subtitle">Gérez le cycle de vie de chaque commande</div></div>
+        </div>
+        <div class="card"><div id="orders-table" class="loading">Chargement...</div></div>
+    </div>
+
+    <!-- ========= CATALOGUE ========= -->
+    <div id="panel-products" class="panel">
+        <div class="page-header">
+            <div><div class="page-title">Catalogue Produits</div></div>
+            <button class="btn btn-primary" onclick="openModal('add-product')">+ Ajouter un produit</button>
+        </div>
+        <div class="card"><div id="products-table" class="loading">Chargement...</div></div>
+    </div>
+
+    <!-- ========= CRM CONTACTS ========= -->
+    <div id="panel-crm-contacts" class="panel">
+        <div class="page-header">
+            <div><div class="page-title">👥 CRM — Contacts</div><div class="page-subtitle">Gérez vos prospects et clients</div></div>
+            <button class="btn btn-primary" onclick="openModal('add-contact')">+ Nouveau contact</button>
+        </div>
+        <div style="display:flex;gap:0.8rem;margin-bottom:1rem;">
+            <input type="text" placeholder="🔍 Rechercher un contact..." id="contact-search" oninput="filterContacts()" style="flex:1;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;outline:none;font-size:0.9rem;">
+            <select id="contact-stage-filter" onchange="filterContacts()" style="padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;outline:none;font-size:0.88rem;">
+                <option value="">Tous les stades</option>
+                <option>PROSPECT</option><option>QUALIFICATION</option><option>PROPOSITION</option>
+                <option>NEGOCIATION</option><option>GAGNE</option><option>PERDU</option>
+            </select>
+        </div>
+        <div class="card"><div id="contacts-table" class="loading">Chargement...</div></div>
+    </div>
+
+    <!-- ========= CRM PIPELINE ========= -->
+    <div id="panel-crm-pipeline" class="panel">
+        <div class="page-header">
+            <div><div class="page-title">💰 Pipeline Commercial</div><div class="page-subtitle">Vision Kanban de vos opportunités</div></div>
+            <button class="btn btn-primary" onclick="openModal('add-deal')">+ Nouvelle opportunité</button>
+        </div>
+        <div class="pipeline-summary" id="pipeline-summary"></div>
+        <div class="kanban" id="kanban-board"></div>
+    </div>
+
+    <!-- ========= CRM TASKS ========= -->
+    <div id="panel-crm-tasks" class="panel">
+        <div class="page-header">
+            <div><div class="page-title">✅ Tâches & Relances</div><div class="page-subtitle">Vos actions à réaliser</div></div>
+            <button class="btn btn-primary" onclick="openModal('add-task')">+ Nouvelle tâche</button>
+        </div>
+        <div class="card"><div id="tasks-table" class="loading">Chargement...</div></div>
+    </div>
+
+    <!-- ========= MESSAGES ========= -->
+    <div id="panel-messages" class="panel">
+        <div class="page-header"><div><div class="page-title">💬 Messages Contact</div></div></div>
+        <div class="card"><div id="messages-table" class="loading">Chargement...</div></div>
+    </div>
+
+    <!-- ========= CLIENTS/USERS ========= -->
+    <div id="panel-users" class="panel">
+        <div class="page-header"><div><div class="page-title">👤 Espace Clients</div><div class="page-subtitle">Comptes clients enregistrés sur le site</div></div></div>
+        <div class="card"><div id="users-table" class="loading">Chargement...</div></div>
+    </div>
+
+</main>
+
+<!-- ========= MODALS ========= -->
+<div class="modal-overlay" id="modal-add-contact">
+    <div class="modal">
+        <h3>➕ Nouveau Contact CRM</h3>
+        <div class="form-grid">
+            <div class="form-group"><label>Prénom *</label><input id="c-firstName" placeholder="Jean"></div>
+            <div class="form-group"><label>Nom *</label><input id="c-lastName" placeholder="Dupont"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="c-email" placeholder="jean@societe.ci"></div>
+            <div class="form-group"><label>Téléphone</label><input id="c-phone" placeholder="+225 00 00 00 00 00"></div>
+            <div class="form-group"><label>Entreprise</label><input id="c-company" placeholder="Ma Société"></div>
+            <div class="form-group"><label>Fonction</label><input id="c-position" placeholder="Directeur Marketing"></div>
+            <div class="form-group"><label>Source</label>
+                <select id="c-source"><option value="SITE">Site Web</option><option value="TELEPHONE">Téléphone</option><option value="RECOMMANDATION">Recommandation</option><option value="RESEAU_SOCIAL">Réseaux Sociaux</option><option value="SALON">Salon / Événement</option></select>
+            </div>
+            <div class="form-group"><label>Stade</label>
+                <select id="c-stage"><option value="PROSPECT">Prospect</option><option value="QUALIFICATION">Qualification</option><option value="PROPOSITION">Proposition</option><option value="NEGOCIATION">Négociation</option><option value="GAGNE">Gagné</option><option value="PERDU">Perdu</option></select>
+            </div>
+        </div>
+        <div class="form-group"><label>Notes initiales</label><textarea id="c-notes" placeholder="Remarques, besoins..."></textarea></div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('add-contact')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveContact()">Créer le contact</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-deal">
+    <div class="modal">
+        <h3>💰 Nouvelle Opportunité</h3>
+        <div class="form-group"><label>Contact</label><select id="d-contactId" style="width:100%;padding:0.7rem;border:1.5px solid var(--border);border-radius:8px;"></select></div>
+        <div class="form-grid">
+            <div class="form-group"><label>Titre *</label><input id="d-title" placeholder="Commande polos entreprise XYZ"></div>
+            <div class="form-group"><label>Montant (FCFA) *</label><input type="number" id="d-amount" placeholder="500000"></div>
+            <div class="form-group"><label>Probabilité (%)</label><input type="number" id="d-proba" value="50" min="0" max="100"></div>
+            <div class="form-group"><label>Stade</label>
+                <select id="d-stage"><option value="PROSPECT">Prospect</option><option value="QUALIFICATION">Qualification</option><option value="PROPOSITION">Proposition</option><option value="NEGOCIATION">Négociation</option><option value="GAGNE">Gagné</option><option value="PERDU">Perdu</option></select>
+            </div>
+            <div class="form-group"><label>Échéance</label><input type="date" id="d-due"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('add-deal')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveDeal()">Créer l'opportunité</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-task">
+    <div class="modal">
+        <h3>✅ Nouvelle Tâche</h3>
+        <div class="form-group"><label>Titre *</label><input id="t-title" placeholder="Relancer M. Dupont..."></div>
+        <div class="form-group"><label>Description</label><textarea id="t-desc" placeholder="Détails..."></textarea></div>
+        <div class="form-grid">
+            <div class="form-group"><label>Priorité</label>
+                <select id="t-priority"><option value="BASSE">Basse</option><option value="NORMALE" selected>Normale</option><option value="HAUTE">Haute</option><option value="URGENTE">Urgente</option></select>
+            </div>
+            <div class="form-group"><label>Échéance</label><input type="date" id="t-due"></div>
+            <div class="form-group"><label>Assigné à</label><input id="t-assign" placeholder="Nom du responsable"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('add-task')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveTask()">Créer la tâche</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-product">
+    <div class="modal">
+        <h3>🧾 Nouveau Produit</h3>
+        <div class="form-grid">
+            <div class="form-group"><label>Nom *</label><input id="p-name" placeholder="Polo personnalisé"></div>
+            <div class="form-group"><label>Catégorie *</label><input id="p-cat" placeholder="Textile"></div>
+            <div class="form-group"><label>Prix (FCFA) *</label><input type="number" id="p-price" placeholder="5000"></div>
+            <div class="form-group"><label>Stock</label><input type="number" id="p-stock" value="100"></div>
+        </div>
+        <div class="form-group"><label>Description</label><textarea id="p-desc" placeholder="Description du produit..."></textarea></div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('add-product')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveProduct()">Ajouter le produit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const STATUS = { EN_ATTENTE:{l:'En attente',c:'badge-yellow'}, VALIDE:{l:'Validé',c:'badge-green'}, REFUSE:{l:'Refusé',c:'badge-red'}, EN_PRODUCTION:{l:'En production',c:'badge-blue'}, CONCEPTION:{l:'Conception',c:'badge-gray'}, VALIDATION_BAT:{l:'Validation BAT',c:'badge-yellow'}, CONTROLE_QUALITE:{l:'Contrôle qualité',c:'badge-blue'}, LIVRE:{l:'Livré ✓',c:'badge-green'}, PROSPECT:{l:'Prospect',c:'badge-blue'}, QUALIFICATION:{l:'Qualification',c:'badge-purple'}, PROPOSITION:{l:'Proposition',c:'badge-yellow'}, NEGOCIATION:{l:'Négociation',c:'badge-yellow'}, GAGNE:{l:'Gagné',c:'badge-green'}, PERDU:{l:'Perdu',c:'badge-red'}, NOUVEAU:{l:'Nouveau',c:'badge-yellow'}, TRAITE:{l:'Traité',c:'badge-green'}, A_FAIRE:{l:'À faire',c:'badge-yellow'}, EN_COURS:{l:'En cours',c:'badge-blue'}, TERMINEE:{l:'Terminée',c:'badge-green'}, BASSE:{l:'Basse',c:'badge-gray'}, NORMALE:{l:'Normale',c:'badge-blue'}, HAUTE:{l:'Haute',c:'badge-yellow'}, URGENTE:{l:'Urgente',c:'badge-red'} };
+const badge = s => { const x = STATUS[s]||{l:s,c:'badge-gray'}; return `<span class="badge ${x.c}">${x.l}</span>`; };
+const fmt = d => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
+const fmtAmt = n => n ? n.toLocaleString('fr-FR') + ' FCFA' : '—';
+
+let allContacts = [];
+let allDeals = [];
+
+async function init() {
+    const me = await fetch('/api/auth/me').then(r=>r.json());
+    if (!me.loggedIn || me.role !== 'ADMIN') { window.location.href='/login'; return; }
+    document.getElementById('adminName').textContent = me.name;
+    document.getElementById('adminAvatar').textContent = me.name[0].toUpperCase();
+    document.getElementById('dash-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    loadDashboard();
+}
+
+function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.getElementById('panel-'+name).classList.add('active');
+    if(event && event.currentTarget) event.currentTarget.classList.add('active');
+    const loaders = { devis:loadDevis, orders:loadOrders, products:loadProducts, 'crm-contacts':loadContacts, 'crm-pipeline':loadPipeline, 'crm-tasks':loadTasks, messages:loadMessages, users:loadUsers };
+    if(loaders[name]) loaders[name]();
+}
+
+async function logout() { await fetch('/api/auth/logout',{method:'POST'}); window.location.href='/login'; }
+
+// ===== DASHBOARD =====
+async function loadDashboard() {
+    const stats = await fetch('/api/admin/stats').then(r=>r.json());
+    document.getElementById('nb-devis').textContent = stats.pendingQuotes;
+    document.getElementById('nb-msgs').textContent = stats.totalMessages;
+    document.getElementById('nb-tasks').textContent = stats.pendingTasks||0;
+    
+    const kpis = [
+        { icon:'📋', label:'Devis totaux', value: stats.totalQuotes, sub:'dont '+stats.pendingQuotes+' en attente', cls:'blue' },
+        { icon:'📦', label:'Commandes actives', value: stats.activeOrders, sub:'en production', cls:'green' },
+        { icon:'👥', label:'Contacts CRM', value: stats.totalContacts, cls:'purple' },
+        { icon:'💬', label:'Messages nouveaux', value: stats.totalMessages, cls:'yellow' },
+        { icon:'👤', label:'Clients inscrits', value: stats.totalUsers, cls:'green' },
+        { icon:'💰', label:'CA Deals Gagnés', value: fmtAmt(stats.revenueWon), cls:'green' },
+        { icon:'✅', label:'Tâches ouvertes', value: stats.pendingTasks||0, cls:'red' },
+        { icon:'🌟', label:'Efficacité', value: stats.totalQuotes > 0 ? Math.round((stats.totalUsers/stats.totalQuotes)*100)+'%' : '—', cls:'blue' }
+    ];
+    document.getElementById('kpi-grid').innerHTML = kpis.map(k=>`
+        <div class="kpi-card ${k.cls}">
+            <div class="kpi-icon">${k.icon}</div>
+            <div class="kpi-label">${k.label}</div>
+            <div class="kpi-value">${k.value}</div>
+            ${k.sub ? `<div style="font-size:0.75rem;color:var(--text-light);margin-top:0.2rem">${k.sub}</div>` : ''}
+        </div>`).join('');
+
+    const tbody = stats.recentQuotes.map(q=>`
+        <tr>
+            <td><strong>${q.clientName}</strong><br><small style="color:var(--text-light)">${q.clientEmail}</small></td>
+            <td>${q.projectType}</td>
+            <td>${badge(q.status)}</td>
+            <td>${fmtAmt(q.amount)}</td>
+            <td>${fmt(q.createdAt)}</td>
+            <td>
+                <select onchange="updateQuoteStatus(${q.id},this.value)" style="padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-size:0.8rem;">
+                    <option>EN_ATTENTE</option><option>VALIDE</option><option>REFUSE</option><option>EN_PRODUCTION</option>
+                </select>
+            </td>
+        </tr>`).join('');
+    document.getElementById('recent-quotes-table').innerHTML = `<table><thead><tr><th>Client</th><th>Type</th><th>Statut</th><th>Montant</th><th>Date</th><th>Action</th></tr></thead><tbody>${tbody}</tbody></table>`;
+}
+
+// ===== DEVIS =====
+async function loadDevis() {
+    const list = await fetch('/api/admin/devis').then(r=>r.json());
+    if (!list.length) { document.getElementById('devis-table').innerHTML='<div class="empty"><div class="icon">📋</div><p>Aucun devis</p></div>'; return; }
+    const rows = list.map(q=>`
+        <tr>
+            <td><strong>${q.clientName}</strong><br><small style="color:var(--text-light)">${q.clientEmail}</small></td>
+            <td>${q.projectType}</td>
+            <td>${q.quantity}</td>
+            <td><textarea style="width:100px;height:40px;border:1px solid var(--border);border-radius:6px;font-size:0.8rem;padding:4px" placeholder="FCFA" id="amt-${q.id}">${q.amount||''}</textarea></td>
+            <td>${badge(q.status)}</td>
+            <td>${badge(q.batStatus||'—')}</td>
+            <td>${fmt(q.createdAt)}</td>
+            <td>
+                <select onchange="updateQuoteStatus(${q.id},this.value,document.getElementById('amt-${q.id}').value)" style="padding:0.3rem;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;max-width:130px">
+                    ${['EN_ATTENTE','VALIDE','REFUSE','EN_PRODUCTION'].map(s=>`<option ${q.status===s?'selected':''}>${s}</option>`).join('')}
+                </select>
+            </td>
+        </tr>`).join('');
+    document.getElementById('devis-table').innerHTML=`<table><thead><tr><th>Client</th><th>Projet</th><th>Qté</th><th>Montant</th><th>Statut</th><th>BAT</th><th>Date</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+async function updateQuoteStatus(id, status, amount) {
+    await fetch(`/api/admin/devis/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status,amount:amount||undefined})});
+    loadDevis();
+}
+
+// ===== ORDERS =====
+async function loadOrders() {
+    const list = await fetch('/api/admin/orders').then(r=>r.json());
+    if (!list.length) { document.getElementById('orders-table').innerHTML='<div class="empty"><div class="icon">📦</div><p>Aucune commande</p></div>'; return; }
+    const steps = ['CONCEPTION','VALIDATION_BAT','EN_PRODUCTION','CONTROLE_QUALITE','LIVRE'];
+    const rows = list.map(o=>{
+        const idx = steps.indexOf(o.status);
+        const pct = Math.round(((idx+1)/steps.length)*100);
+        return `<tr>
+            <td><strong>${o.title}</strong><br><small style="color:var(--text-light)">${o.user?.name||'—'}</small></td>
+            <td>${badge(o.status)}</td>
+            <td><div style="background:#e5e7eb;border-radius:999px;height:6px;width:120px"><div style="background:var(--primary);width:${pct}%;height:6px;border-radius:999px"></div></div><small style="color:var(--text-light)">${pct}%</small></td>
+            <td>${fmtAmt(o.amount)}</td>
+            <td>${fmt(o.createdAt)}</td>
+            <td><select onchange="updateOrderStatus(${o.id},this.value)" style="padding:0.3rem;border:1px solid var(--border);border-radius:6px;font-size:0.78rem">
+                ${steps.map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+            </select></td>
+        </tr>`;
+    }).join('');
+    document.getElementById('orders-table').innerHTML=`<table><thead><tr><th>Commande</th><th>Statut</th><th>Progression</th><th>Montant</th><th>Date</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+async function updateOrderStatus(id, status) {
+    await fetch(`/api/admin/orders/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
+    loadOrders();
+}
+
+// ===== PRODUCTS =====
+async function loadProducts() {
+    const list = await fetch('/api/admin/products').then(r=>r.json());
+    if (!list.length) { document.getElementById('products-table').innerHTML='<div class="empty"><div class="icon">🧾</div><p>Aucun produit</p></div>'; return; }
+    const rows = list.map(p=>`<tr>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.category}</td>
+        <td>${fmtAmt(p.price)}</td>
+        <td>${p.stock}</td>
+        <td>${fmt(p.createdAt)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">Supprimer</button></td>
+    </tr>`).join('');
+    document.getElementById('products-table').innerHTML=`<table><thead><tr><th>Nom</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Date</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+async function saveProduct() {
+    const data = { name:document.getElementById('p-name').value, category:document.getElementById('p-cat').value, description:document.getElementById('p-desc').value, price:document.getElementById('p-price').value, stock:document.getElementById('p-stock').value };
+    if (!data.name || !data.price) return alert('Nom et prix requis');
+    await fetch('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    closeModal('add-product'); loadProducts();
+}
+async function deleteProduct(id) {
+    if (!confirm('Supprimer ce produit ?')) return;
+    await fetch(`/api/admin/products/${id}`,{method:'DELETE'}); loadProducts();
+}
+
+// ===== CRM CONTACTS =====
+async function loadContacts() {
+    const search = document.getElementById('contact-search').value;
+    const stage = document.getElementById('contact-stage-filter').value;
+    let url = '/api/crm/contacts?';
+    if (search) url += 'search='+encodeURIComponent(search)+'&';
+    if (stage) url += 'stage='+stage;
+    allContacts = await fetch(url).then(r=>r.json());
+    renderContacts();
+}
+function filterContacts() { loadContacts(); }
+function renderContacts() {
+    if (!allContacts.length) { document.getElementById('contacts-table').innerHTML='<div class="empty"><div class="icon">👥</div><p>Aucun contact</p></div>'; return; }
+    const rows = allContacts.map(c=>`<tr>
+        <td><strong>${c.firstName} ${c.lastName}</strong><br><small style="color:var(--text-light)">${c.company||'—'}</small></td>
+        <td><a href="mailto:${c.email}" style="color:var(--primary)">${c.email}</a></td>
+        <td>${c.phone||'—'}</td>
+        <td>${badge(c.stage)}</td>
+        <td>${c.source||'—'}</td>
+        <td>${c._count.interactions} int. · ${c._count.deals} deals</td>
+        <td>${fmt(c.lastContact)}</td>
+        <td>
+            <button class="btn btn-outline btn-sm" onclick="viewContact(${c.id})">Voir</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteContact(${c.id})">✕</button>
+        </td>
+    </tr>`).join('');
+    document.getElementById('contacts-table').innerHTML=`<table><thead><tr><th>Contact</th><th>Email</th><th>Téléphone</th><th>Stade</th><th>Source</th><th>Activité</th><th>Dernier contact</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+async function saveContact() {
+    const data = { firstName:document.getElementById('c-firstName').value, lastName:document.getElementById('c-lastName').value, email:document.getElementById('c-email').value, phone:document.getElementById('c-phone').value, company:document.getElementById('c-company').value, position:document.getElementById('c-position').value, source:document.getElementById('c-source').value, stage:document.getElementById('c-stage').value, notes:document.getElementById('c-notes').value };
+    if (!data.firstName || !data.lastName) return alert('Prénom et nom requis');
+    await fetch('/api/crm/contacts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    closeModal('add-contact'); loadContacts();
+}
+async function viewContact(id) {
+    const c = await fetch(`/api/crm/contacts/${id}`).then(r=>r.json());
+    alert(`Contact: ${c.firstName} ${c.lastName}\nEmail: ${c.email}\nEntreprise: ${c.company||'—'}\nStade: ${c.stage}\nInteractions: ${c.interactions.length}\nDeals: ${c.deals.length}`);
+}
+async function deleteContact(id) {
+    if (!confirm('Supprimer ce contact et toutes ses données ?')) return;
+    await fetch(`/api/crm/contacts/${id}`,{method:'DELETE'}); loadContacts();
+}
+
+// ===== PIPELINE =====
+const STAGES = ['PROSPECT','QUALIFICATION','PROPOSITION','NEGOCIATION','GAGNE','PERDU'];
+const STAGE_LABELS = { PROSPECT:'🔵 Prospect', QUALIFICATION:'🟣 Qualification', PROPOSITION:'🟡 Proposition', NEGOCIATION:'🟠 Négociation', GAGNE:'🟢 Gagné', PERDU:'🔴 Perdu' };
+
+async function loadPipeline() {
+    allDeals = await fetch('/api/crm/deals').then(r=>r.json());
+    const stats = await fetch('/api/crm/stats').then(r=>r.json());
+
+    // Summary
+    const pipelineTotal = allDeals.reduce((s,d)=>s+(d.stage!=='PERDU'?d.amount:0),0);
+    const wonTotal = allDeals.filter(d=>d.stage==='GAGNE').reduce((s,d)=>s+d.amount,0);
+    const lostTotal = allDeals.filter(d=>d.stage==='PERDU').reduce((s,d)=>s+d.amount,0);
+    document.getElementById('pipeline-summary').innerHTML = [
+        {l:'Total Pipeline',v:fmtAmt(pipelineTotal),i:'💼'},
+        {l:'CA Gagné',v:fmtAmt(wonTotal),i:'🏆'},
+        {l:'Perdu',v:fmtAmt(lostTotal),i:'❌'},
+        {l:'Opportunités actives',v:allDeals.filter(d=>!['GAGNE','PERDU'].includes(d.stage)).length,i:'📈'},
+        {l:'Taux conversion',v:allDeals.length?Math.round((allDeals.filter(d=>d.stage==='GAGNE').length/allDeals.length)*100)+'%':'—',i:'📊'},
+        {l:'Tâches ouvertes',v:stats.openTasks,i:'✅'},
+    ].map(s=>`<div class="pipe-stat"><div style="font-size:1.2rem">${s.i}</div><div class="num">${s.v}</div><div class="lbl">${s.l}</div></div>`).join('');
+
+    // Kanban
+    document.getElementById('kanban-board').innerHTML = STAGES.map(stage => {
+        const cards = allDeals.filter(d=>d.stage===stage);
+        const stageTotal = cards.reduce((s,d)=>s+d.amount,0);
+        return `<div class="kanban-col">
+            <div class="kanban-col-header">${STAGE_LABELS[stage]} <span class="kanban-count">${cards.length}</span></div>
+            <div style="font-size:0.75rem;color:var(--text-light);margin-bottom:0.8rem">${fmtAmt(stageTotal)}</div>
+            ${cards.map(d=>`
+                <div class="kanban-card">
+                    <h4>${d.title}</h4>
+                    <div class="company">👤 ${d.contact?.firstName||''} ${d.contact?.lastName||''} — ${d.contact?.company||'—'}</div>
+                    <div class="amount">${fmtAmt(d.amount)} · ${d.probability}%</div>
+                    ${d.dueDate?`<div style="font-size:0.72rem;color:var(--text-light);margin-top:0.3rem">📅 ${fmt(d.dueDate)}</div>`:''}
+                    <div style="display:flex;gap:0.4rem;margin-top:0.6rem">
+                        <select onchange="updateDeal(${d.id},this.value)" style="flex:1;padding:0.3rem;border:1px solid var(--border);border-radius:6px;font-size:0.75rem">
+                            ${STAGES.map(s=>`<option ${d.stage===s?'selected':''}>${s}</option>`).join('')}
+                        </select>
+                        <button class="btn btn-danger btn-sm" onclick="deleteDeal(${d.id})">✕</button>
+                    </div>
+                </div>`).join('')}
+        </div>`;
+    }).join('');
+
+    // Populate contact select
+    const contacts = await fetch('/api/crm/contacts').then(r=>r.json());
+    allContacts = contacts;
+    document.getElementById('d-contactId').innerHTML = contacts.map(c=>`<option value="${c.id}">${c.firstName} ${c.lastName} — ${c.company||c.email}</option>`).join('');
+}
+
+async function saveDeal() {
+    const data = { contactId:document.getElementById('d-contactId').value, title:document.getElementById('d-title').value, amount:document.getElementById('d-amount').value, probability:document.getElementById('d-proba').value, stage:document.getElementById('d-stage').value, dueDate:document.getElementById('d-due').value||null };
+    if (!data.title || !data.amount) return alert('Titre et montant requis');
+    await fetch('/api/crm/deals',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    closeModal('add-deal'); loadPipeline();
+}
+async function updateDeal(id, stage) {
+    await fetch(`/api/crm/deals/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({stage})});
+    loadPipeline();
+}
+async function deleteDeal(id) {
+    if (!confirm('Supprimer cette opportunité ?')) return;
+    await fetch(`/api/crm/deals/${id}`,{method:'DELETE'}); loadPipeline();
+}
+
+// ===== TASKS =====
+async function loadTasks() {
+    const tasks = await fetch('/api/crm/tasks').then(r=>r.json());
+    if (!tasks.length) { document.getElementById('tasks-table').innerHTML='<div class="empty"><div class="icon">✅</div><p>Aucune tâche en cours</p></div>'; return; }
+    const rows = tasks.map(t=>`<tr>
+        <td><strong>${t.title}</strong><br><small style="color:var(--text-light)">${t.description||''}</small></td>
+        <td>${t.contact?`${t.contact.firstName} ${t.contact.lastName}`:'—'}</td>
+        <td>${badge(t.priority)}</td>
+        <td>${badge(t.status)}</td>
+        <td>${fmt(t.dueDate)}</td>
+        <td>${t.assignedTo||'—'}</td>
+        <td>
+            <button class="btn btn-outline btn-sm" onclick="completeTask(${t.id})">✓ Terminer</button>
+        </td>
+    </tr>`).join('');
+    document.getElementById('tasks-table').innerHTML=`<table><thead><tr><th>Tâche</th><th>Contact</th><th>Priorité</th><th>Statut</th><th>Échéance</th><th>Assigné</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+async function saveTask() {
+    const data = { title:document.getElementById('t-title').value, description:document.getElementById('t-desc').value, priority:document.getElementById('t-priority').value, dueDate:document.getElementById('t-due').value||null, assignedTo:document.getElementById('t-assign').value };
+    if (!data.title) return alert('Titre requis');
+    await fetch('/api/crm/tasks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    closeModal('add-task'); loadTasks();
+}
+async function completeTask(id) {
+    await fetch(`/api/crm/tasks/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'TERMINEE'})});
+    loadTasks();
+    document.getElementById('nb-tasks').textContent = Math.max(0, parseInt(document.getElementById('nb-tasks').textContent)-1);
+}
+
+// ===== MESSAGES =====
+async function loadMessages() {
+    const msgs = await fetch('/api/admin/messages').then(r=>r.json());
+    if (!msgs.length) { document.getElementById('messages-table').innerHTML='<div class="empty"><div class="icon">💬</div><p>Aucun message</p></div>'; return; }
+    const rows = msgs.map(m=>`<tr>
+        <td><strong>${m.name}</strong><br><a href="mailto:${m.email}" style="color:var(--primary);font-size:0.82rem">${m.email}</a></td>
+        <td style="max-width:300px">${m.message.substring(0,100)}${m.message.length>100?'...':''}</td>
+        <td>${badge(m.status)}</td>
+        <td>${fmt(m.createdAt)}</td>
+        <td>
+            ${m.status==='NOUVEAU'?`<button class="btn btn-outline btn-sm" onclick="markMessageDone(${m.id})">✓ Traité</button>`:''}
+            <a href="mailto:${m.email}" class="btn btn-primary btn-sm">Répondre</a>
+        </td>
+    </tr>`).join('');
+    document.getElementById('messages-table').innerHTML=`<table><thead><tr><th>Expéditeur</th><th>Message</th><th>Statut</th><th>Date</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+async function markMessageDone(id) {
+    await fetch(`/api/admin/messages/${id}`,{method:'PUT'}); loadMessages(); loadDashboard();
+}
+
+// ===== USERS =====
+async function loadUsers() {
+    const users = await fetch('/api/admin/users').then(r=>r.json());
+    if (!users.length) { document.getElementById('users-table').innerHTML='<div class="empty"><div class="icon">👤</div><p>Aucun client inscrit</p></div>'; return; }
+    const rows = users.map(u=>`<tr>
+        <td><strong>${u.name}</strong></td>
+        <td>${u.email}</td>
+        <td>${u.company||'—'}</td>
+        <td>${u.phone||'—'}</td>
+        <td>${fmt(u.createdAt)}</td>
+    </tr>`).join('');
+    document.getElementById('users-table').innerHTML=`<table><thead><tr><th>Nom</th><th>Email</th><th>Entreprise</th><th>Téléphone</th><th>Inscrit le</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ===== MODALS =====
+function openModal(name) { document.getElementById('modal-'+name).classList.add('show'); }
+function closeModal(name) { document.getElementById('modal-'+name).classList.remove('show'); }
+document.addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) e.target.classList.remove('show'); });
+
+init();
+</script>
+</body>
+</html>

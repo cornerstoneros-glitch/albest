@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  company   String?
+  phone     String?
+  role      String   @default("CLIENT") // "CLIENT" or "ADMIN"
+  createdAt DateTime @default(now())
+
+  quotes       Quote[]
+  orders       Order[]
+  crmNotes     CrmNote[]
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  message   String
+  status    String   @default("NOUVEAU") // "NOUVEAU", "TRAITE"
+  createdAt DateTime @default(now())
+}
+
+model Quote {
+  id          Int      @id @default(autoincrement())
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id])
+  clientName  String
+  clientEmail String
+  projectType String
+  quantity    String
+  deadline    String
+  details     String
+  status      String   @default("EN_ATTENTE") // "EN_ATTENTE", "VALIDE", "REFUSE", "EN_PRODUCTION"
+  amount      Float?
+  batImage    String?
+  batStatus   String?  // "EN_ATTENTE", "VALIDE", "REJETE"
+  createdAt   DateTime @default(now())
+
+  orders      Order[]
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  quoteId     Int?
+  quote       Quote?   @relation(fields: [quoteId], references: [id])
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id])
+  title       String
+  amount      Float
+  status      String   @default("EN_PRODUCTION") // "CONCEPTION", "VALIDATION_BAT", "EN_PRODUCTION", "CONTROLE_QUALITE", "LIVRE"
+  batApproved Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String
+  description String?
+  price       Float
+  stock       Int      @default(100)
+  image       String?
+  createdAt   DateTime @default(now())
+}
+
+// ===================== CRM 360 =====================
+
+model CrmContact {
+  id           Int      @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String   @unique
+  phone        String?
+  company      String?
+  position     String?
+  source       String?  // "SITE", "TELEPHONE", "RECOMMANDATION", "RESEAU_SOCIAL", "SALON"
+  stage        String   @default("PROSPECT") // "PROSPECT", "QUALIFICATION", "PROPOSITION", "NEGOCIATION", "GAGNE", "PERDU"
+  priority     String   @default("NORMALE") // "BASSE", "NORMALE", "HAUTE"
+  assignedTo   String?  // Nom du commercial
+  totalAmount  Float    @default(0)
+  tags         String?  // JSON array as string
+  notes        String?
+  lastContact  DateTime?
+  nextAction   String?
+  nextActionAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  interactions CrmInteraction[]
+  deals        CrmDeal[]
+  tasks        CrmTask[]
+  notes_list   CrmNote[]
+}
+
+model CrmInteraction {
+  id          Int        @id @default(autoincrement())
+  contactId   Int
+  contact     CrmContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  type        String     // "EMAIL", "APPEL", "REUNION", "DEVIS", "RELANCE"
+  subject     String
+  content     String?
+  direction   String     @default("SORTANT") // "ENTRANT", "SORTANT"
+  createdAt   DateTime   @default(now())
+}
+
+model CrmDeal {
+  id          Int        @id @default(autoincrement())
+  contactId   Int
+  contact     CrmContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  title       String
+  amount      Float
+  probability Int        @default(50) // 0-100%
+  stage       String     @default("PROSPECT") // "PROSPECT", "QUALIFICATION", "PROPOSITION", "NEGOCIATION", "GAGNE", "PERDU"
+  dueDate     DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CrmTask {
+  id          Int        @id @default(autoincrement())
+  contactId   Int?
+  contact     CrmContact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  priority    String     @default("NORMALE") // "BASSE", "NORMALE", "HAUTE", "URGENTE"
+  status      String     @default("A_FAIRE") // "A_FAIRE", "EN_COURS", "TERMINEE"
+  dueDate     DateTime?
+  assignedTo  String?
+  createdAt   DateTime   @default(now())
+}
+
+model CrmNote {
+  id          Int        @id @default(autoincrement())
+  contactId   Int?
+  contact     CrmContact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  userId      Int?
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  content     String
+  createdAt   DateTime   @default(now())
+}

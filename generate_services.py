@@ -1,0 +1,279 @@
+import os
+
+SERVICES = {
+    "broderie": {
+        "title": "Broderie haute définition",
+        "description": "La broderie est la technique de marquage la plus noble et la plus durable. Nous réalisons des broderies d'une précision exceptionnelle sur tous vos textiles grâce à notre parc de machines industrielles de dernière génération, directement dans notre atelier en Côte d'Ivoire.",
+        "image": "/images/services/broderie.png",
+        "features": [
+            "Rendu premium en relief",
+            "Tenue exceptionnelle dans le temps",
+            "Idéal pour les polos, casquettes et vestes",
+            "Jusqu'à 15 couleurs par motif"
+        ]
+    },
+    "flocage": {
+        "title": "Flocage & Sérigraphie",
+        "description": "Le flocage (transfert à chaud) et la sérigraphie sont parfaits pour les grandes séries et les designs colorés. Nous garantissons des couleurs éclatantes et une excellente résistance au lavage.",
+        "image": "/images/services/flocage.png",
+        "features": [
+            "Idéal pour les logos complexes",
+            "Couleurs vives et contrastées",
+            "Excellent rapport qualité/prix",
+            "Parfait pour les t-shirts et l'événementiel"
+        ]
+    },
+    "impression": {
+        "title": "Impression numérique DTG",
+        "description": "L'impression Direct-To-Garment (DTG) permet d'imprimer vos visuels, même les plus complexes (photos, dégradés), directement au cœur de la fibre du vêtement avec un toucher imperceptible.",
+        "image": "/images/services/impression.png",
+        "features": [
+            "Impression sans limite de couleurs",
+            "Dégradés et détails photographiques parfaits",
+            "Toucher très doux, intégré à la fibre",
+            "Respect de l'environnement (encres à l'eau)"
+        ]
+    },
+    "sourcing": {
+        "title": "Sourcing sur-mesure",
+        "description": "Vous recherchez un produit spécifique qui ne figure pas dans notre catalogue ? Notre équipe s'occupe de sourcer pour vous les meilleurs textiles et goodies auprès de notre réseau de fournisseurs certifiés.",
+        "image": "/images/services/sourcing.png",
+        "features": [
+            "Recherche personnalisée selon votre cahier des charges",
+            "Goodies technologiques, accessoires, bagagerie",
+            "Prototypage et validation",
+            "Contrôle qualité strict"
+        ]
+    }
+}
+
+TEMPLATE = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title} | Albest Communication</title>
+    <meta name="description" content="{description}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/png" href="/Favicon.png">
+    <style>
+        .service-hero {{
+            padding-top: 120px;
+            padding-bottom: 5rem;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border);
+        }}
+        .service-inner {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }}
+        .service-text h1 {{
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }}
+        .service-text p {{
+            font-size: 1.1rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }}
+        .service-features {{
+            list-style: none;
+            margin-bottom: 2.5rem;
+        }}
+        .service-features li {{
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            color: var(--text);
+        }}
+        .service-features li::before {{
+            content: '✓';
+            color: var(--white);
+            background: var(--brand-teal);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }}
+        .service-image {{
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            aspect-ratio: 4/5;
+        }}
+        .service-image img {{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }}
+        @media (max-width: 900px) {{
+            .service-inner {{ grid-template-columns: 1fr; gap: 3rem; }}
+            .service-image {{ aspect-ratio: 16/9; }}
+        }}
+    </style>
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" id="navbar">
+    <a href="/" class="nav-logo">
+        <img src="/logo.jpg" alt="Albest Communication">
+    </a>
+    <ul class="nav-links">
+        <li class="nav-item">
+            <a href="/#catalogue" class="nav-link">Textiles</a>
+        </li>
+        <li class="nav-item">
+            <a href="/#catalogue" class="nav-link">Goodies</a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link" style="color: var(--primary);">
+                Services
+            </a>
+            <div class="megamenu" style="min-width: 420px;">
+                <div class="megamenu-body">
+                    <div class="megamenu-col">
+                        <h5>Notre Expertise</h5>
+                        <ul>
+                            <li><a href="/services/broderie">Broderie haute définition <span class="arrow">→</span></a></li>
+                            <li><a href="/services/flocage">Flocage &amp; sérigraphie <span class="arrow">→</span></a></li>
+                            <li><a href="/services/impression">Impression numérique DTG <span class="arrow">→</span></a></li>
+                            <li><a href="/services/sourcing">Sourcing sur-mesure <span class="arrow">→</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a href="/#qui-sommes-nous" class="nav-link">Qui sommes-nous</a>
+        </li>
+        <li class="nav-item">
+            <a href="/contact" class="nav-link">Contact</a>
+        </li>
+    </ul>
+    <div class="nav-right">
+        <a href="/devis" class="btn-primary" style="font-size: 0.88rem; padding: 0.65rem 1.4rem;">Devis express</a>
+    </div>
+</nav>
+
+<!-- ===================== SERVICE CONTENT ===================== -->
+<div class="service-hero">
+    <div class="service-inner">
+        <div class="service-text">
+            <span class="eyebrow" style="color: var(--primary); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 1rem;">Notre Expertise</span>
+            <h1>{title}</h1>
+            <p>{description}</p>
+            <ul class="service-features">
+                {features_html}
+            </ul>
+            <a href="/devis" class="btn-primary">Demander un devis</a>
+            <a href="/#catalogue" class="btn-ghost">Voir le catalogue</a>
+        </div>
+        <div class="service-image">
+            <img src="{image}" alt="{title}">
+        </div>
+    </div>
+</div>
+
+<!-- ===================== CTA ===================== -->
+<div class="section-cta" style="padding: 5rem 2rem; background: var(--bg-dark); color: white; text-align: center;">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem; color: white;">Prêt à donner vie à votre projet ?</h2>
+    <p style="margin-bottom: 2rem; color: rgba(255,255,255,0.7);">Confiez-nous la personnalisation de vos textiles et objets promotionnels.</p>
+    <a href="/devis" class="btn-primary" style="background: white; color: var(--bg-dark); border-color: white;">Contactez-nous</a>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer" id="contact">
+    <div class="section-inner" style="max-width:1400px; margin:0 auto; padding:0 2rem;">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/logo.jpg" alt="Albest Communication">
+                <p>Albest Communication — votre partenaire textile et goodies depuis 10 ans. Livraison rapide en Côte d'Ivoire.</p>
+            </div>
+            <div class="footer-col">
+                <h5>Nos produits</h5>
+                <ul>
+                    <li><a href="/categorie/t-shirts">T-shirts</a></li>
+                    <li><a href="/categorie/polos">Polos</a></li>
+                    <li><a href="/categorie/sweats-et-pulls">Sweats</a></li>
+                    <li><a href="/categorie/sacs-et-bagagerie">Bagagerie</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Informations</h5>
+                <ul>
+                    <li><a href="/devis">Devis Express</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/mentions">Mentions légales</a></li>
+                    <li><a href="/cgv">CGV</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Contact</h5>
+                <ul>
+                    <li><a href="mailto:contact@albest.fr">contact@albest.fr</a></li>
+                    <li><a href="tel:+22500000000">+225 00 00 00 00 00</a></li>
+                    <li><a href="#">Abidjan, Côte d'Ivoire</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 Albest Communication. Tous droits réservés.</span>
+            <div class="footer-bottom-links">
+                <a href="/mentions">Mentions légales</a>
+                <a href="/cgv">CGV</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {{
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {{
+        navbar.classList.toggle('scrolled', window.scrollY > 30);
+    }});
+}});
+</script>
+</body>
+</html>
+"""
+
+def generate():
+    os.makedirs("services", exist_ok=True)
+    
+    for slug, data in SERVICES.items():
+        features_html = "\n                ".join([f"<li>{f}</li>" for f in data["features"]])
+        
+        html = TEMPLATE.format(
+            title=data["title"],
+            description=data["description"],
+            image=data["image"],
+            features_html=features_html
+        )
+        
+        filepath = os.path.join("services", f"{slug}.html")
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(html)
+        print(f"OK {filepath}")
+        
+if __name__ == "__main__":
+    generate()
