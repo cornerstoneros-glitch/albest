@@ -3,15 +3,14 @@ const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const SqliteStore = require('better-sqlite3-session-store')(session);
 require('dotenv').config();
 
 const { PrismaClient } = require('@prisma/client');
-const Database = require('better-sqlite3');
-const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
+const { PrismaLibSql } = require('@prisma/adapter-libsql');
 
 const app = express();
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL || 'file:./dev.db' });
+const dbUrl = process.env.DATABASE_URL || 'file:dev.db';
+const adapter = new PrismaLibSql({ url: dbUrl });
 const prisma = new PrismaClient({ adapter });
 const PORT = process.env.PORT || 3000;
 
@@ -20,12 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const sessionsDB = new Database('./sessions.db');
 app.use(session({
-    store: new SqliteStore({
-      client: sessionsDB,
-      expired: { clear: true, intervalMs: 900000 }
-    }),
     secret: process.env.SESSION_SECRET || 'albest_secret_2026',
     resave: false,
     saveUninitialized: false,

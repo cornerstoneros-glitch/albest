@@ -1,13 +1,14 @@
 const { PrismaClient } = require('@prisma/client');
-const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
+const { PrismaLibSql } = require('@prisma/adapter-libsql');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL || 'file:./dev.db' });
+const url = process.env.DATABASE_URL || 'file:dev.db';
+const adapter = new PrismaLibSql({ url });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-    console.log('Connexion à la base de données en cours...');
+    console.log('Connexion à la base de données SQLite (via LibSql) en cours...');
     
     // Paramètres de l'administrateur par défaut
     const email = process.env.ADMIN_EMAIL || 'admin@albest.io';
@@ -58,4 +59,3 @@ main()
     .finally(async () => {
         await prisma.$disconnect();
     });
-
