@@ -102,8 +102,10 @@
 
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <img src="/logo.jpg" alt="Albest">
-        <span>Espace Client</span>
+        <a href="/" title="Retour à l'accueil" style="display:flex; align-items:center; gap:0.6rem; text-decoration:none; color:inherit;">
+            <img src="/logo.jpg" alt="Albest">
+            <span>Espace Client</span>
+        </a>
     </div>
     <nav class="sidebar-nav">
         <div class="nav-item active" onclick="showPanel('overview')"><span class="icon">🏠</span> Vue d'ensemble</div>
@@ -112,6 +114,7 @@
         <div class="nav-item" onclick="showPanel('orders')"><span class="icon">📦</span> Mes Commandes</div>
         <div class="nav-item" onclick="showPanel('profile')"><span class="icon">👤</span> Mon Profil</div>
         <div class="nav-item" onclick="window.location.href='/devis'"><span class="icon">✨</span> Nouveau Devis</div>
+        <div class="nav-item" onclick="window.location.href='/'" style="color:#10b981; font-weight:600;"><span class="icon">🌐</span> Retour au site</div>
     </nav>
     <div class="sidebar-footer">
         <div class="user-info">
@@ -201,7 +204,7 @@
         <div class="card">
             <div class="card-header"><h3>Informations personnelles</h3></div>
             <div class="card-body">
-                <p style="color:var(--text-light)">Connectez-vous à votre compte pour mettre à jour vos informations. Pour toute modification, contactez-nous à <strong>contact@albest.fr</strong>.</p>
+                <p style="color:var(--text-light)">Connectez-vous à votre compte pour mettre à jour vos informations. Pour toute modification, contactez-nous à <strong>contact@albest.io</strong>.</p>
             </div>
         </div>
     </div>

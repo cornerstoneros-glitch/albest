@@ -139,10 +139,20 @@
 
 <aside class="sidebar">
     <div class="sb-logo">
-        <img src="/logo.jpg" alt="Albest">
-        <div class="badge-admin">ADMIN 360°</div>
+        <a href="/" title="Retour à l'accueil" style="display:inline-block; text-decoration:none;">
+            <img src="/logo.jpg" alt="Albest">
+        </a>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+            <div class="badge-admin">ADMIN 360°</div>
+            <a href="/" style="display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.12); color:white; padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600; text-decoration:none; transition:all 0.2s;" title="Retour au site public">
+                <span>🏠 Accueil</span>
+            </a>
+        </div>
     </div>
     
+    <div class="sb-section">Navigation</div>
+    <a href="/" class="nav-item" style="color:#10b981; text-decoration:none; font-weight:600;"><span class="icon">🏠</span> Retour à l'accueil</a>
+
     <div class="sb-section">Tableau de bord</div>
     <div class="nav-item active" onclick="showPanel('dashboard')"><span class="icon">📊</span> Vue 360°</div>
     
@@ -165,6 +175,9 @@
             <div class="avatar" id="adminAvatar">A</div>
             <div class="user-name" id="adminName">Admin</div>
         </div>
+        <a href="/" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; width:100%; margin-top:0.7rem; padding:0.55rem; background:#1a8f78; border:none; color:white; border-radius:8px; text-decoration:none; font-size:0.82rem; font-weight:600; transition:all 0.2s;">
+            <span>🏠</span> Retour à l'accueil
+        </a>
         <button class="btn-logout" onclick="logout()">Se déconnecter</button>
     </div>
 </aside>
@@ -178,7 +191,12 @@
                 <div class="page-title">Vue 360°</div>
                 <div class="page-subtitle">Tableau de bord Albest Communication — activité globale</div>
             </div>
-            <span id="dash-date" style="color:var(--text-light);font-size:0.9rem;"></span>
+            <div style="display:flex; gap:1rem; align-items:center;">
+                <span id="dash-date" style="color:var(--text-light);font-size:0.9rem;"></span>
+                <a href="/" class="btn btn-outline" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
+                    <span>🏠</span> Retour à l'accueil
+                </a>
+            </div>
         </div>
         <div class="kpi-grid" id="kpi-grid"><div class="loading" style="grid-column:1/-1">Chargement...</div></div>
         <div class="card">
@@ -270,7 +288,7 @@
             <div class="form-group"><label>Prénom *</label><input id="c-firstName" placeholder="Jean"></div>
             <div class="form-group"><label>Nom *</label><input id="c-lastName" placeholder="Dupont"></div>
             <div class="form-group"><label>Email</label><input type="email" id="c-email" placeholder="jean@societe.ci"></div>
-            <div class="form-group"><label>Téléphone</label><input id="c-phone" placeholder="+225 00 00 00 00 00"></div>
+            <div class="form-group"><label>Téléphone</label><input id="c-phone" placeholder="+225 05 44 05 48 48"></div>
             <div class="form-group"><label>Entreprise</label><input id="c-company" placeholder="Ma Société"></div>
             <div class="form-group"><label>Fonction</label><input id="c-position" placeholder="Directeur Marketing"></div>
             <div class="form-group"><label>Source</label>

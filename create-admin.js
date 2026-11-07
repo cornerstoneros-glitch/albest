@@ -15,7 +15,7 @@ async function main() {
     const password = process.env.ADMIN_PASSWORD || 'AdminAlbest2026!';
     const name = 'Administrateur Albest';
     const company = 'Albest';
-    const phone = '01 23 45 67 89';
+    const phone = '+225 05 44 05 48 48';
 
     const existingUser = await prisma.user.findUnique({
         where: { email }
